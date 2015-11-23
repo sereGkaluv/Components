@@ -11,5 +11,27 @@
 
     <artifactId>thresholdmodifier</artifactId>
 
-
+    <dependencies>
+        <dependency>
+            <groupId>com.sun.media.jai.codec</groupId>
+            <artifactId>jai_codec</artifactId>
+            <version>1.1.2_01</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/../libs/jai_codec.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>javax.media.jai</groupId>
+            <artifactId>jai_core</artifactId>
+            <version>1.1.2_01</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/../libs/jai_core.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>com.sun.medialib.mlib</groupId>
+            <artifactId>mlibwrapper_jai</artifactId>
+            <version>1.1.2</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/../libs/mlibwrapper_jai.jar</systemPath>
+        </dependency>
+    </dependencies>
 </project>
