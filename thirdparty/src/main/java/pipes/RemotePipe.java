@@ -1,4 +1,4 @@
-package thirdparty.pipes;
+package pipes;
 
 import java.io.StreamCorruptedException;
 import java.rmi.RemoteException;

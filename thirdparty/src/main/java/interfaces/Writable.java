@@ -1,4 +1,4 @@
-package thirdparty.interfaces;
+package interfaces;
 
 import java.io.StreamCorruptedException;
 

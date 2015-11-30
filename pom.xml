@@ -28,6 +28,7 @@
         <module>thresholdmodifier</module>
         <module>roimodifier</module>
         <module>combinemodifier</module>
+        <module>sharedUtils</module>
     </modules>
 
     <build>
