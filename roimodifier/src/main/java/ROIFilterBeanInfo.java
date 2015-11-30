@@ -6,12 +6,13 @@ import java.beans.SimpleBeanInfo;
 /**
  * Created by f00 on 23.11.15.
  */
-public class roiBeanInfo extends SimpleBeanInfo {
+public class ROIFilterBeanInfo extends SimpleBeanInfo {
 
     public PropertyDescriptor[] getPropertyDescriptors() {
         try {
+
             PropertyDescriptor pd1;
-            pd1 = new PropertyDescriptor("interval", Roi.class);
+            pd1 = new PropertyDescriptor("interval", ROIFilter.class);
             PropertyDescriptor pds[] = {pd1};
             return pds;
         } catch (Exception ex) {
