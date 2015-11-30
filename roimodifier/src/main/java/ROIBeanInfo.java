@@ -6,7 +6,7 @@ import java.beans.SimpleBeanInfo;
 /**
  * Created by f00 on 23.11.15.
  */
-public class ROIFilterBeanInfo extends SimpleBeanInfo {
+public class ROIBeanInfo extends SimpleBeanInfo {
 
     public PropertyDescriptor[] getPropertyDescriptors() {
         try {
