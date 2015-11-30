@@ -23,11 +23,12 @@
         <module>dilatemodifier</module>
         <module>erodemodifier</module>
         <module>openingmodifier</module>
-        <module>colsingmodifier</module>
+        <module>closingmodifier</module>
         <module>medianmodifier</module>
         <module>thresholdmodifier</module>
         <module>roimodifier</module>
         <module>combinemodifier</module>
+        <module>sharedUtils</module>
     </modules>
 
     <build>

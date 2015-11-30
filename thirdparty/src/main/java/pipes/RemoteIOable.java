@@ -1,4 +1,4 @@
-package thirdparty.pipes;
+package pipes;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;

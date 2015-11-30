@@ -1,8 +1,8 @@
-package thirdparty.filter;
+package filter;
 
-import thirdparty.interfaces.IOable;
-import thirdparty.interfaces.Readable;
-import thirdparty.interfaces.Writable;
+import interfaces.IOable;
+import interfaces.Readable;
+import interfaces.Writable;
 
 import java.io.StreamCorruptedException;
 import java.security.InvalidParameterException;

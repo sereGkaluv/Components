@@ -1,6 +1,6 @@
-package thirdparty.pipes;
+package pipes;
 
-import thirdparty.interfaces.IOable;
+import interfaces.IOable;
 
 import java.io.StreamCorruptedException;
 import java.rmi.Naming;

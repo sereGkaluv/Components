@@ -1,13 +1,13 @@
-package thirdparty.filter;
+package filter;
 
-import thirdparty.interfaces.Readable;
-import thirdparty.interfaces.Writable;
+import interfaces.Writable;
+import interfaces.Readable;
 
 import java.io.StreamCorruptedException;
 import java.security.InvalidParameterException;
 
 
-public class ForwardingFilter<T> extends AbstractFilter <T,T> {
+public class ForwardingFilter<T> extends AbstractFilter<T,T> {
 
     public ForwardingFilter(Readable<T> input, Writable<T> output) throws InvalidParameterException {
         super(input, output);
