@@ -2,17 +2,18 @@ package bean;
 
 
 import filter.ClosingFilter;
-import ifaces.EventHandlerImageImpl;
-import ifaces.ImageEvent;
-import ifaces.ImageListener;
-import other.ImageEventReadable;
+import impl.ImageEvent;
+import impl.ImageEventHandler;
+import interfaces.ImageListener;
 
 import java.io.StreamCorruptedException;
 
 /**
  * Created by f00 on 30.11.15.
  */
-public class ClosingBean extends EventHandlerImageImpl implements ImageListener {
+public class ClosingBean extends ImageEventHandler implements ImageListener {
+    //TODO annotations (@TargetDescriptor)
+
     private ClosingFilter closingFilter = null;
     private int radius = 0;
     private ImageEvent input = null;
@@ -27,14 +28,14 @@ public class ClosingBean extends EventHandlerImageImpl implements ImageListener 
     public void setRadius(int radius) {
         this.radius = radius;
         if (input != null) {
-            onImage(input);
+            onImageEvent(input);
         }
     }
 
     @Override
-    public void onImage(ImageEvent e) {
-        closingFilter = new ClosingFilter(new ImageEventReadable<ImageEvent>(e), radius);
-        input = e;
+    public void onImageEvent(ImageEvent imageEvent) {
+        closingFilter = new ClosingFilter(() -> imageEvent, radius);
+        input = imageEvent;
         ImageEvent result = null;
 
         try {
@@ -44,7 +45,6 @@ public class ClosingBean extends EventHandlerImageImpl implements ImageListener 
         } catch (StreamCorruptedException e1) {
             e1.printStackTrace();
         }
-        notifyAllListener(result);
+        notifyAllListeners(result);
     }
-}
 }
