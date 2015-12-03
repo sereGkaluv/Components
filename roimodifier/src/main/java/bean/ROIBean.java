@@ -2,6 +2,8 @@ package bean;
 
 import annotations.TargetDescriptor;
 
+import filter.ROI;
+import filter.ROIFilter;
 import impl.ImageEventHandler;
 import impl.ImageEvent;
 import interfaces.ImageListener;
@@ -63,6 +65,7 @@ public class ROIBean extends ImageEventHandler implements ImageListener {
     }
 
     @Override
+    @TargetDescriptor
     public void onImageEvent(ImageEvent imageEvent) {
         try {
             _lastImageEvent = imageEvent;
