@@ -8,6 +8,8 @@ import java.beans.SimpleBeanInfo;
  */
 public class CombineBeanInfo extends SimpleBeanInfo {
 
+    String RANDOMPROPERTY;
+
     @Override
     public PropertyDescriptor[] getPropertyDescriptors() {
 
