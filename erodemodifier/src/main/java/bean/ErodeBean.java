@@ -1,57 +1,49 @@
 package bean;
 
 import annotations.TargetDescriptor;
-import filter.OpeningFilter;
+import filter.ErodeFilter;
 import impl.ImageEvent;
 import impl.ImageEventHandler;
-import util.Kernel;
 import interfaces.ImageListener;
+import util.Kernel;
 
 import java.io.StreamCorruptedException;
 
+
 /**
- * Created by sereGkaluv on 02-Dec-15.
+ * Created by f00 on 03.12.15.
  */
-public class OpeningBean extends ImageEventHandler implements ImageListener {
+public class ErodeBean extends ImageEventHandler implements ImageListener {
 
     @TargetDescriptor
     private Kernel _kernel = new Kernel();
 
     private ImageEvent _lastImageEvent;
 
-    public OpeningBean() {
-    }
+    /* empty constructor */
+    public ErodeBean() {
 
-    public Kernel getKernel() {
-        return _kernel;
-    }
-
-    public void setKernel(Kernel kernel) {
-        _kernel = kernel;
-        reload();
     }
 
     @Override
     @TargetDescriptor
     public void onImageEvent(ImageEvent imageEvent) {
         try {
+
             _lastImageEvent = imageEvent;
 
-            OpeningFilter openingFilter = new OpeningFilter(
-                () -> imageEvent,
-                _kernel
+            ErodeFilter erodeFilter = new ErodeFilter(
+                    () -> imageEvent,
+                    _kernel
             );
 
-            ImageEvent result = openingFilter.read();
+            ImageEvent result = erodeFilter.read();
 
             notifyAllListeners(result);
+
         } catch (StreamCorruptedException e) {
             e.printStackTrace();
             notifyAllListeners(null);
         }
-    }
-
-    private void reload() {
-        if (_lastImageEvent != null) onImageEvent(_lastImageEvent);
     }
 }

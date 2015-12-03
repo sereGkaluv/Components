@@ -1,6 +1,6 @@
 package filter;
 
-import bean.Kernel;
+import util.Kernel;
 import generic.EnhancedDataTransformationFilter;
 import impl.ImageEvent;
 import interfaces.Readable;

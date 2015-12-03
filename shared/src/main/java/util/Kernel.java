@@ -1,4 +1,4 @@
-package bean;
+package util;
 
 import javax.media.jai.KernelJAI;
 
@@ -7,6 +7,7 @@ import javax.media.jai.KernelJAI;
  */
 public class Kernel {
 
+    //TODO maybe customizer so kernel-values can be edited
     private static final int DEFAULT_KERNEL_SIZE_X = 12;
     private static final int DEFAULT_KERNEL_SIZE_Y = 13;
     private static final float[] DEFAULT_KERNEL_VALUES = {
