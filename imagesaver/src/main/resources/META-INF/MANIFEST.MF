@@ -1,5 +1,5 @@
 Manifest-Version: 1.0
 
-Name: ImageSaver.class
+Name: bean.ImageSaver.class
 Java-Bean: True
 

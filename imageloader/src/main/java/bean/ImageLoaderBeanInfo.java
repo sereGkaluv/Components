@@ -1,3 +1,5 @@
+package bean;
+
 import java.beans.PropertyDescriptor;
 import java.beans.SimpleBeanInfo;
 

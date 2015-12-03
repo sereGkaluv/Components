@@ -1,3 +1,5 @@
+package bean;
+
 import impl.AbstractBeanInfo;
 import impl.ImageEvent;
 import interfaces.ImageListener;

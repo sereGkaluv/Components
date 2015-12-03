@@ -1,3 +1,5 @@
+package filter;
+
 import generic.EnhancedDataTransformationFilter;
 import impl.ImageEvent;
 import interfaces.Readable;

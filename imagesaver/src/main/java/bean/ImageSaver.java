@@ -1,3 +1,5 @@
+package bean;
+
 import annotations.TargetDescriptor;
 import impl.ImageEvent;
 import impl.ImageEventHandler;

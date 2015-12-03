@@ -1,5 +1,5 @@
 Manifest-Version: 1.0
 
-Name: ImageLoader.class
+Name: bean.ImageLoader.class
 Java-Bean: True
 

@@ -1,3 +1,5 @@
+package bean;
+
 import impl.ImageEvent;
 import impl.ImageEventHandler;
 
