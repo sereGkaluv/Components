@@ -1,5 +1,7 @@
 package bean;
 
+import java.beans.IntrospectionException;
+import java.beans.MethodDescriptor;
 import java.beans.PropertyDescriptor;
 import java.beans.SimpleBeanInfo;
 
@@ -15,9 +17,14 @@ public class ImageLoaderBeanInfo extends SimpleBeanInfo {
             PropertyDescriptor pd1 = new PropertyDescriptor(PROP_IMAGE_PATH, ImageLoader.class);
 
             return new PropertyDescriptor[]{pd1};
-        } catch (Exception e) {
+        } catch (IntrospectionException e) {
             e.printStackTrace();
             return null;
         }
+    }
+
+    @Override
+    public MethodDescriptor[] getMethodDescriptors() {
+        return new MethodDescriptor[]{};
     }
 }
