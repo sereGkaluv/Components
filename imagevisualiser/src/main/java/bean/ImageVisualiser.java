@@ -1,5 +1,6 @@
 package bean;
 
+import annotations.TargetDescriptor;
 import impl.ImageEvent;
 import interfaces.EventHandler;
 import interfaces.ImageListener;
@@ -14,15 +15,50 @@ import java.util.Set;
  */
 public class ImageVisualiser extends Canvas implements ImageListener, EventHandler<ImageListener, ImageEvent> {
     private static final Set<ImageListener> IMAGE_LISTENER_REGISTRY = new HashSet<>();
-
     private static final int DEFAULT_IMAGE_PLACEHOLDER_SIZE = 100;
+
+    @TargetDescriptor
     private int _width = DEFAULT_IMAGE_PLACEHOLDER_SIZE;
+    @TargetDescriptor
     private int _height = DEFAULT_IMAGE_PLACEHOLDER_SIZE;
 
     private transient BufferedImage _bufferedImage;
 
     public ImageVisualiser() {
         setSize(_width, _height);
+    }
+
+    @Override
+    public int getWidth() {
+        return _width;
+    }
+
+    public void setWidth(int width) {
+        _width = width;
+    }
+
+    @Override
+    public int getHeight() {
+        return _height;
+    }
+
+    public void setHeight(int height) {
+        _height = height;
+    }
+
+    /* Canvas Overrides */
+    @Override
+    public void paint(Graphics g) {
+        setSize(_width, _height);
+        g.drawImage(_bufferedImage, 0, 0, this);
+    }
+
+    /* EventListener override */
+    @Override
+    @TargetDescriptor
+    public void onImageEvent(ImageEvent imageEvent) {
+        _bufferedImage = imageEvent.getImage().getAsBufferedImage();
+        repaint();
     }
 
     /* ImageListener Overrides */
@@ -40,38 +76,4 @@ public class ImageVisualiser extends Canvas implements ImageListener, EventHandl
     public void notifyAllListeners(ImageEvent imageEvent) {
         IMAGE_LISTENER_REGISTRY.forEach(listener -> listener.onImageEvent(imageEvent));
     }
-
-    /* Canvas Overrides */
-    @Override
-    public void paint(Graphics g) {
-        setSize(_width, _height);
-        g.drawImage(_bufferedImage, 0, 0, this);
-    }
-
-    /* EventListener override */
-    @Override
-    public void onImageEvent(ImageEvent imageEvent) {
-        _bufferedImage = imageEvent.getImage().getAsBufferedImage();
-        repaint();
-    }
-
-
-    /* getter / setter */
-    public int getImageWidth() {
-        return _width;
-    }
-
-    public void setImageWidth(int width) {
-        _width = width;
-    }
-
-    public int getImageHeight() {
-        return _height;
-    }
-
-    public void setImageHeight(int height) {
-        _height = height;
-    }
-
-
 }
