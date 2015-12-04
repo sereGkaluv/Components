@@ -1,5 +1,6 @@
 package impl;
 
+import javax.media.jai.PlanarImage;
 import java.awt.image.BufferedImage;
 import java.util.EventObject;
 
@@ -8,7 +9,7 @@ import java.util.EventObject;
  */
 public class ImageEvent extends EventObject {
 
-    private final BufferedImage _bufferedImage;
+    private final PlanarImage _planarImage;
 
     /**
      * Prototype Event
@@ -16,12 +17,12 @@ public class ImageEvent extends EventObject {
      * @param source the Event-throwing object
      * @throws IllegalArgumentException if source == null
      */
-    public ImageEvent(Object source, BufferedImage bufferedImage) {
+    public ImageEvent(Object source, PlanarImage planarImage) {
         super(source);
-        _bufferedImage = bufferedImage;
+        _planarImage = planarImage;
     }
 
-    public BufferedImage getImage() {
-        return _bufferedImage;
+    public PlanarImage getImage() {
+        return _planarImage;
     }
 }

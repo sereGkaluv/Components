@@ -8,9 +8,9 @@ import interfaces.ImageListener;
 /**
  * Created by f00 on 03.12.15.
  */
-public class DilateBeanInfo extends AbstractBeanInfo<DilateBean, ImageEvent, ImageListener> {
+public class DilateBeanInfo extends AbstractBeanInfo<Dilate, ImageEvent, ImageListener> {
 
     public DilateBeanInfo() {
-        super(DilateBean.class, ImageEvent.class, ImageListener.class);
+        super(Dilate.class, ImageEvent.class, ImageListener.class);
     }
 }

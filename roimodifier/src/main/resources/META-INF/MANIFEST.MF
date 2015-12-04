@@ -1,5 +1,5 @@
 Manifest-Version: 1.0
 
-Name: bean.ROIBean.class
+Name: bean.ROI.class
 Java-Bean: True
 

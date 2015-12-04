@@ -27,9 +27,10 @@
         <module>medianmodifier</module>
         <module>thresholdmodifier</module>
         <module>roimodifier</module>
-        <module>combinemodifier</module>
+        <module>overlaymodifier</module>
         <module>shared</module>
         <module>pipesandfilters</module>
+        <module>calccentroids</module>
     </modules>
 
     <build>

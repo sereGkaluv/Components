@@ -4,6 +4,7 @@ import impl.ImageEvent;
 import impl.ImageEventHandler;
 
 import javax.imageio.ImageIO;
+import javax.media.jai.PlanarImage;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -36,10 +37,14 @@ public class ImageLoader extends ImageEventHandler implements Runnable {
         }
     }
 
-    private BufferedImage loadImage(String imagePath) {
+    private PlanarImage loadImage(String imagePath) {
         try {
 
-            if (imagePath != null && !imagePath.trim().isEmpty()) return ImageIO.read(new File(imagePath));
+            if (imagePath != null && !imagePath.trim().isEmpty()) {
+                return PlanarImage.wrapRenderedImage(
+                    ImageIO.read(new File(imagePath))
+                );
+            }
 
         } catch (IOException e) {
             e.printStackTrace();

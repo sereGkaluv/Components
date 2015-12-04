@@ -1,11 +1,11 @@
 package filter;
 
-import generic.EnhancedDataTransformationFilter;
 import impl.ImageEvent;
 import interfaces.Readable;
 import interfaces.Writable;
+import util.JAIOperators;
 
-import java.awt.image.BufferedImage;
+import javax.media.jai.PlanarImage;
 import java.security.InvalidParameterException;
 
 /**
@@ -13,21 +13,21 @@ import java.security.InvalidParameterException;
  */
 public class ROIFilter extends EnhancedDataTransformationFilter<ImageEvent> {
 
-    private final ROI _roi;
+    private final Region _roi;
 
-    public ROIFilter(Readable<ImageEvent> input, Writable<ImageEvent> output, ROI roi)
+    public ROIFilter(Readable<ImageEvent> input, Writable<ImageEvent> output, Region roi)
     throws InvalidParameterException {
         super(input, output);
         _roi = roi;
     }
 
-    public ROIFilter(Readable<ImageEvent> input, ROI roi)
+    public ROIFilter(Readable<ImageEvent> input, Region roi)
     throws InvalidParameterException {
         super(input);
         _roi = roi;
     }
 
-    public ROIFilter(Writable<ImageEvent> output, ROI roi)
+    public ROIFilter(Writable<ImageEvent> output, Region roi)
     throws InvalidParameterException {
         super(output);
         _roi = roi;
@@ -35,8 +35,18 @@ public class ROIFilter extends EnhancedDataTransformationFilter<ImageEvent> {
 
     @Override
     protected ImageEvent process(ImageEvent imageEvent) {
-        BufferedImage image = imageEvent.getImage();
-        image = image.getSubimage(_roi.getX(), _roi.getY(), _roi.getWidth(), _roi.getHeight());
+        PlanarImage image = imageEvent.getImage();
+
+        //Recreating a new Planar Image cropped by given _roi Rectangle.
+        PlanarImage roiImage = PlanarImage.wrapRenderedImage(
+            image.getAsBufferedImage().getSubimage(
+                _roi.getX(), _roi.getY(), _roi.getWidth(), _roi.getHeight()
+            )
+        );
+
+        //Setting shift value to planar image.
+        roiImage.setProperty(JAIOperators.THRESHOLD_X.getOperatorValue(), _roi.getX());
+        roiImage.setProperty(JAIOperators.THRESHOLD_Y.getOperatorValue(), _roi.getY());
 
         return new ImageEvent(this, image);
     }

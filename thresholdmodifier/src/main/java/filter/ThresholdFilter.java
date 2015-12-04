@@ -1,6 +1,5 @@
 package filter;
 
-import generic.EnhancedDataTransformationFilter;
 import impl.ImageEvent;
 import interfaces.Readable;
 import interfaces.Writable;
@@ -8,7 +7,6 @@ import util.JAIOperators;
 
 import javax.media.jai.JAI;
 import javax.media.jai.PlanarImage;
-import java.awt.image.BufferedImage;
 import java.awt.image.renderable.ParameterBlock;
 import java.security.InvalidParameterException;
 
@@ -47,8 +45,11 @@ public class ThresholdFilter extends EnhancedDataTransformationFilter<ImageEvent
             pb
         );
 
+        //Coping image properties.
+        copyImageProperties(newImage, imageEvent.getImage());
+
         //Returning new event.
-        return new ImageEvent(this, newImage.getAsBufferedImage());
+        return new ImageEvent(this, newImage);
     }
 
     /**
@@ -59,12 +60,30 @@ public class ThresholdFilter extends EnhancedDataTransformationFilter<ImageEvent
      *                   3 element - color value that will replace all colors in range between 1 and 2 element
      * @return New instance of prepared parameter block
      */
-    private ParameterBlock prepareParameterBlock(BufferedImage image, double[]... parameters) {
+    private ParameterBlock prepareParameterBlock(PlanarImage image, double[]... parameters) {
         ParameterBlock pb = new ParameterBlock();
 
         for (double[] parameterGroup : parameters) {
             pb.add(parameterGroup);
         }
         return pb.addSource(image);
+    }
+
+    /**
+     * Copies all the parameters to new image from source .
+     *
+     * @param newImage image to which properties will be copied.
+     * @param sourceImage image from which properties will be copied.
+     */
+    private void copyImageProperties(PlanarImage newImage, PlanarImage sourceImage) {
+        newImage.setProperty(
+            JAIOperators.THRESHOLD_X.getOperatorValue(),
+            sourceImage.getProperty(JAIOperators.THRESHOLD_X.getOperatorValue())
+        );
+
+        newImage.setProperty(
+            JAIOperators.THRESHOLD_Y.getOperatorValue(),
+            sourceImage.getProperty(JAIOperators.THRESHOLD_Y.getOperatorValue())
+        );
     }
 }

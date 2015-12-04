@@ -35,7 +35,7 @@ public class ImageSaver extends ImageEventHandler implements ImageListener {
     public void onImageEvent(ImageEvent imageEvent) {
         if (imageEvent != null) {
             try {
-                BufferedImage image = imageEvent.getImage();
+                BufferedImage image = imageEvent.getImage().getAsBufferedImage();
                 ImageIO.write(image, FILE_FORMAT, new File(_imagePath));
             } catch (IOException e) {
                 e.printStackTrace();

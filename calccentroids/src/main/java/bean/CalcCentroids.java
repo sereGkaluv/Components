@@ -11,8 +11,9 @@ import java.util.Set;
 
 /**
  * Created by sereGkaluv on 23-Nov-15.
+ * TODO
  */
-public class ImageVisualiser extends Canvas implements ImageListener, EventHandler<ImageListener, ImageEvent> {
+public class CalcCentroids extends TextArea implements ImageListener, EventHandler<ImageListener, ImageEvent> {
     private static final Set<ImageListener> IMAGE_LISTENER_REGISTRY = new HashSet<>();
 
     private static final int DEFAULT_IMAGE_PLACEHOLDER_SIZE = 100;
@@ -21,7 +22,7 @@ public class ImageVisualiser extends Canvas implements ImageListener, EventHandl
 
     private transient BufferedImage _bufferedImage;
 
-    public ImageVisualiser() {
+    public CalcCentroids() {
         setSize(_width, _height);
     }
 
@@ -72,6 +73,4 @@ public class ImageVisualiser extends Canvas implements ImageListener, EventHandl
     public void setImageHeight(int height) {
         _height = height;
     }
-
-
 }

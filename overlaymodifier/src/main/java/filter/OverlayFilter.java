@@ -4,51 +4,47 @@ import impl.ImageEvent;
 import interfaces.Readable;
 import interfaces.Writable;
 import util.JAIOperators;
-import util.Kernel;
 
-import javax.media.jai.KernelJAI;
 import javax.media.jai.PlanarImage;
+import javax.media.jai.operator.OverlayDescriptor;
 import java.security.InvalidParameterException;
 
 /**
  * Created by sereGkaluv on 04-Dec-15.
  */
-public class ClosingFilter extends EnhancedDataTransformationFilter<ImageEvent> {
+public class OverlayFilter extends DataMergeFilter<ImageEvent, ImageEvent, ImageEvent> {
 
-    private final KernelJAI _kernel;
-
-    public ClosingFilter(Readable<ImageEvent> input, Writable<ImageEvent> output, Kernel kernel)
+    public OverlayFilter(Readable<ImageEvent> baseInput, Readable<ImageEvent> overInput, Writable<ImageEvent> output)
     throws InvalidParameterException {
-        super(input, output);
-        _kernel = kernel.getJAIKernel();
+        super(baseInput, overInput, output);
     }
 
-    public ClosingFilter(Readable<ImageEvent> input, Kernel kernel)
+    public OverlayFilter(Readable<ImageEvent> baseInput, Readable<ImageEvent> overInput)
     throws InvalidParameterException {
-        super(input);
-        _kernel = kernel.getJAIKernel();
+        super(baseInput, overInput);
     }
 
-    public ClosingFilter(Writable<ImageEvent> output, Kernel kernel)
+    public OverlayFilter(Writable<ImageEvent> output)
     throws InvalidParameterException {
         super(output);
-        _kernel = kernel.getJAIKernel();
     }
 
     @Override
-    public ImageEvent process(ImageEvent imageEvent) {
-        //Closing image.
-        PlanarImage newImage = imageEvent.getImage();
+    protected ImageEvent process(ImageEvent backgroundImageEvent, ImageEvent foregroundImageEvent) {
+        //Logically and two images.
+        PlanarImage newImage = PlanarImage.wrapRenderedImage(
+            OverlayDescriptor.create(backgroundImageEvent.getImage(), foregroundImageEvent.getImage(), null)
+        );
 
         //Coping image properties.
-        copyImageProperties(newImage, imageEvent.getImage());
+        copyImageProperties(newImage, foregroundImageEvent.getImage());
 
         //Returning new event.
         return new ImageEvent(this, newImage);
     }
 
     /**
-     * Copies all the parameters to new image from source .
+     * Copies all the parameters to new image from source.
      *
      * @param newImage image to which properties will be copied.
      * @param sourceImage image from which properties will be copied.
