@@ -6,6 +6,7 @@ import interfaces.Writable;
 import util.JAIOperators;
 
 import javax.media.jai.PlanarImage;
+import java.awt.*;
 import java.security.InvalidParameterException;
 
 /**
@@ -39,8 +40,9 @@ public class ROIFilter extends EnhancedDataTransformationFilter<ImageEvent> {
 
         //Recreating a new Planar Image cropped by given _roi Rectangle.
         PlanarImage roiImage = PlanarImage.wrapRenderedImage(
-            image.getAsBufferedImage().getSubimage(
-                _roi.getX(), _roi.getY(), _roi.getWidth(), _roi.getHeight()
+            image.getAsBufferedImage(
+                new Rectangle(_roi.getX(), _roi.getY(), _roi.getWidth(), _roi.getHeight()),
+                image.getColorModel()
             )
         );
 

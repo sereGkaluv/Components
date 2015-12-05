@@ -74,14 +74,18 @@ public class MedianFilter extends EnhancedDataTransformationFilter<ImageEvent> {
      * @param sourceImage image from which properties will be copied.
      */
     private void copyImageProperties(PlanarImage newImage, PlanarImage sourceImage) {
-        newImage.setProperty(
-            JAIOperators.THRESHOLD_X.getOperatorValue(),
-            sourceImage.getProperty(JAIOperators.THRESHOLD_X.getOperatorValue())
-        );
+        if (sourceImage.getProperty(JAIOperators.THRESHOLD_X.getOperatorValue()) != null) {
+            newImage.setProperty(
+                JAIOperators.THRESHOLD_X.getOperatorValue(),
+                sourceImage.getProperty(JAIOperators.THRESHOLD_X.getOperatorValue())
+            );
+        }
 
-        newImage.setProperty(
-            JAIOperators.THRESHOLD_Y.getOperatorValue(),
-            sourceImage.getProperty(JAIOperators.THRESHOLD_Y.getOperatorValue())
-        );
+        if (sourceImage.getProperty(JAIOperators.THRESHOLD_Y.getOperatorValue()) != null) {
+            newImage.setProperty(
+                JAIOperators.THRESHOLD_Y.getOperatorValue(),
+                sourceImage.getProperty(JAIOperators.THRESHOLD_Y.getOperatorValue())
+            );
+        }
     }
 }

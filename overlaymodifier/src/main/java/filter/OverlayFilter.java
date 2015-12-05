@@ -31,16 +31,31 @@ public class OverlayFilter extends DataMergeFilter<ImageEvent, ImageEvent, Image
 
     @Override
     protected ImageEvent process(ImageEvent backgroundImageEvent, ImageEvent foregroundImageEvent) {
-        //Logically and two images.
-        PlanarImage newImage = PlanarImage.wrapRenderedImage(
-            OverlayDescriptor.create(backgroundImageEvent.getImage(), foregroundImageEvent.getImage(), null)
-        );
 
-        //Coping image properties.
-        copyImageProperties(newImage, foregroundImageEvent.getImage());
+        //if can be merged
+        if (backgroundImageEvent != null && foregroundImageEvent != null) {
 
-        //Returning new event.
-        return new ImageEvent(this, newImage);
+            //Logically and two images.
+            PlanarImage newImage = PlanarImage.wrapRenderedImage(
+                    OverlayDescriptor.create(backgroundImageEvent.getImage(), foregroundImageEvent.getImage(), null)
+            );
+
+            //Coping image properties.
+            copyImageProperties(newImage, foregroundImageEvent.getImage());
+
+            //Returning new event.
+            return new ImageEvent(this, newImage);
+
+        } else if (backgroundImageEvent == null) {
+
+            //if no background -> return foreground
+            return foregroundImageEvent;
+
+        } else {
+
+            //if no foreground -> return background
+            return backgroundImageEvent;
+        }
     }
 
     /**
@@ -50,14 +65,18 @@ public class OverlayFilter extends DataMergeFilter<ImageEvent, ImageEvent, Image
      * @param sourceImage image from which properties will be copied.
      */
     private void copyImageProperties(PlanarImage newImage, PlanarImage sourceImage) {
-        newImage.setProperty(
-            JAIOperators.THRESHOLD_X.getOperatorValue(),
-            sourceImage.getProperty(JAIOperators.THRESHOLD_X.getOperatorValue())
-        );
+        if (sourceImage.getProperty(JAIOperators.THRESHOLD_X.getOperatorValue()) != null) {
+            newImage.setProperty(
+                JAIOperators.THRESHOLD_X.getOperatorValue(),
+                sourceImage.getProperty(JAIOperators.THRESHOLD_X.getOperatorValue())
+            );
+        }
 
-        newImage.setProperty(
-            JAIOperators.THRESHOLD_Y.getOperatorValue(),
-            sourceImage.getProperty(JAIOperators.THRESHOLD_Y.getOperatorValue())
-        );
+        if (sourceImage.getProperty(JAIOperators.THRESHOLD_Y.getOperatorValue()) != null) {
+            newImage.setProperty(
+                JAIOperators.THRESHOLD_Y.getOperatorValue(),
+                sourceImage.getProperty(JAIOperators.THRESHOLD_Y.getOperatorValue())
+            );
+        }
     }
 }

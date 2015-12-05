@@ -1,76 +1,218 @@
 package bean;
 
+import annotations.TargetDescriptor;
+import filter.CalcCentroidsFilter;
 import impl.ImageEvent;
-import interfaces.EventHandler;
 import interfaces.ImageListener;
+import util.Coordinate;
 
 import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.util.HashSet;
-import java.util.Set;
+import java.io.IOException;
+import java.io.StreamCorruptedException;
+import java.util.Enumeration;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Properties;
 
 /**
  * Created by sereGkaluv on 23-Nov-15.
- * TODO
  */
-public class CalcCentroids extends TextArea implements ImageListener, EventHandler<ImageListener, ImageEvent> {
-    private static final Set<ImageListener> IMAGE_LISTENER_REGISTRY = new HashSet<>();
+public class CalcCentroids extends TextArea implements ImageListener {
+    private static final String RESULT_FAILED = "FAILED.";
 
-    private static final int DEFAULT_IMAGE_PLACEHOLDER_SIZE = 100;
-    private int _width = DEFAULT_IMAGE_PLACEHOLDER_SIZE;
-    private int _height = DEFAULT_IMAGE_PLACEHOLDER_SIZE;
+    @TargetDescriptor
+    private int _width = 150;
+    @TargetDescriptor
+    private int _height = 300;
+    @TargetDescriptor
+    private int _accuracy = 3;
+    @TargetDescriptor
+    private String _centroidsFilePath = "";
 
-    private transient BufferedImage _bufferedImage;
+    private ImageEvent _lastImageEvent;
 
     public CalcCentroids() {
+        setColumns(1);
         setSize(_width, _height);
     }
 
-    /* ImageListener Overrides */
     @Override
-    public void addImageListener(ImageListener listener) {
-        IMAGE_LISTENER_REGISTRY.add(listener);
-    }
-
-    @Override
-    public void removeImageListener(ImageListener listener) {
-        IMAGE_LISTENER_REGISTRY.remove(listener);
-    }
-
-    @Override
-    public void notifyAllListeners(ImageEvent imageEvent) {
-        IMAGE_LISTENER_REGISTRY.forEach(listener -> listener.onImageEvent(imageEvent));
-    }
-
-    /* Canvas Overrides */
-    @Override
-    public void paint(Graphics g) {
-        setSize(_width, _height);
-        g.drawImage(_bufferedImage, 0, 0, this);
-    }
-
-    /* EventListener override */
-    @Override
-    public void onImageEvent(ImageEvent imageEvent) {
-        _bufferedImage = imageEvent.getImage().getAsBufferedImage();
-        repaint();
-    }
-
-
-    /* getter / setter */
-    public int getImageWidth() {
+    public int getWidth() {
         return _width;
     }
 
-    public void setImageWidth(int width) {
+    public void setWidth(int width) {
         _width = width;
+        reload();
     }
 
-    public int getImageHeight() {
+    @Override
+    public int getHeight() {
         return _height;
     }
 
-    public void setImageHeight(int height) {
+    public void setHeight(int height) {
         _height = height;
+        reload();
+    }
+
+    public int getAccuracy() {
+        return _accuracy;
+    }
+
+    public void setAccuracy(int accuracy) {
+        _accuracy = accuracy;
+        reload();
+    }
+
+    public String getCentroidsFilePath() {
+        return _centroidsFilePath;
+    }
+
+    public void setCentroidsFilePath(String centroidsFilePath) {
+        _centroidsFilePath = centroidsFilePath;
+        reload();
+    }
+
+    @Override
+    @TargetDescriptor
+    public void onImageEvent(ImageEvent imageEvent) {
+        try {
+            _lastImageEvent = imageEvent;
+
+            CalcCentroidsFilter centroidsFilter = new CalcCentroidsFilter(imageEvent::getImage);
+
+            List<Coordinate> coordinateList = centroidsFilter.read();
+            if (coordinateList != null && !coordinateList.isEmpty()) {
+
+                String results = prepareResults(coordinateList, loadShouldList(getCentroidsFilePath()));
+                setText(results);
+
+            } else {
+
+                setText(RESULT_FAILED);
+            }
+
+            repaint();
+
+        } catch (StreamCorruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public String prepareResults(List<Coordinate> isSolderingPlaces, List<Coordinate> shouldSolderingPlaces)
+    throws StreamCorruptedException {
+
+        if (isValidList(isSolderingPlaces) && isValidList(shouldSolderingPlaces)) {
+
+            StringBuilder sb = new StringBuilder();
+
+            for (int i = 0; i < shouldSolderingPlaces.size(); ++i) {
+
+                Coordinate should = shouldSolderingPlaces.get(i);
+
+                //Check if 'is' list is big enough according to should list.
+                if (i < isSolderingPlaces.size()) {
+                    Coordinate is = isSolderingPlaces.get(i);
+
+                    //Checking if 'is' value is in 'should' accuracy range.
+                    if (isInAccuracyRange(is, should)) {
+
+                        sb.append("PASSED. Soldering place #");
+                        sb.append(i);
+                        sb.append(" is in the accuracy range.\r\n");
+
+                    } else {
+                        sb.append("FAILED. Soldering place #");
+                        sb.append(i);
+                        sb.append(" is out of the accuracy range.\r\n");
+                    }
+
+                    sb.append(getCoordinatesString(is, should));
+
+                } else {
+                    sb.append("FAILED. Soldering place #");
+                    sb.append(i);
+                    sb.append(" was not detected.\r\n\r\n");
+                }
+            }
+
+            return sb.toString();
+        }
+
+        return RESULT_FAILED;
+    }
+
+    /**
+     * Loads should list from the property file.
+     *
+     * @param centroidsFilePath path to the property file.
+     * @return list with should coordinates.
+     */
+    private List<Coordinate> loadShouldList(String centroidsFilePath) {
+        try {
+            List<Coordinate> shouldList = new LinkedList<>();
+
+            Properties coordinates = new Properties();
+            coordinates.load(getClass().getClassLoader().getResourceAsStream(centroidsFilePath));
+
+            Enumeration<?> c = coordinates.propertyNames();
+            while (c.hasMoreElements()) {
+                String coordinate = (String) c.nextElement();
+                String[] position = coordinates.getProperty(coordinate).split(":");
+
+                if (position.length == 2) {
+                    int x = Integer.getInteger(position[0]);
+                    int y = Integer.getInteger(position[1]);
+
+                    shouldList.add(new Coordinate(x, y));
+                }
+            }
+
+            return shouldList;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    /**
+     * Checks if list is null and empty.
+     *
+     * @param list calculated coordinate.
+     * @return true if is not null and is not empty, otherwise false.
+     */
+    private <T> boolean isValidList(List<T> list) {
+        return list != null && list.isEmpty();
+    }
+
+    /**
+     * Compares two Coordinates.
+     *
+     * @param is calculated coordinate.
+     * @param should expected value for this coordinate.
+     * @return true if 'is coordinate' present inside or on accuracy border,
+     *         false if it lays elsewhere.
+     */
+    private boolean isInAccuracyRange(Coordinate is, Coordinate should) {
+        boolean isInRangeX = Math.abs(should._x - is._x) <= getAccuracy();
+        boolean isInRangeY = Math.abs(should._y - is._y) <= getAccuracy();
+
+        return isInRangeX && isInRangeY;
+    }
+
+    /**
+     * Prepares Coordinate comparison string.
+     *
+     * @param is calculated coordinate.
+     * @param should expected value for this coordinate.
+     * @return Coordinate comparison string
+     */
+    private String getCoordinatesString(Coordinate is, Coordinate should) {
+        return "INFO. Expected [" + should._x + ", " + should._y + "] | Received [" + is._x + ", " + is._y + "]\r\n\r\n";
+    }
+
+    private void reload() {
+        if (_lastImageEvent != null) onImageEvent(_lastImageEvent);
     }
 }

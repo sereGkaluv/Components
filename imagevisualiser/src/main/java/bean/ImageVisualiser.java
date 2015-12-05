@@ -13,8 +13,7 @@ import java.util.Set;
 /**
  * Created by sereGkaluv on 23-Nov-15.
  */
-public class ImageVisualiser extends Canvas implements ImageListener, EventHandler<ImageListener, ImageEvent> {
-    private static final Set<ImageListener> IMAGE_LISTENER_REGISTRY = new HashSet<>();
+public class ImageVisualiser extends Canvas implements ImageListener {
     private static final int DEFAULT_IMAGE_PLACEHOLDER_SIZE = 100;
 
     @TargetDescriptor
@@ -53,27 +52,11 @@ public class ImageVisualiser extends Canvas implements ImageListener, EventHandl
         g.drawImage(_bufferedImage, 0, 0, this);
     }
 
-    /* EventListener override */
+    /* ImageListener override */
     @Override
     @TargetDescriptor
     public void onImageEvent(ImageEvent imageEvent) {
         _bufferedImage = imageEvent.getImage().getAsBufferedImage();
         repaint();
-    }
-
-    /* ImageListener Overrides */
-    @Override
-    public void addImageListener(ImageListener listener) {
-        IMAGE_LISTENER_REGISTRY.add(listener);
-    }
-
-    @Override
-    public void removeImageListener(ImageListener listener) {
-        IMAGE_LISTENER_REGISTRY.remove(listener);
-    }
-
-    @Override
-    public void notifyAllListeners(ImageEvent imageEvent) {
-        IMAGE_LISTENER_REGISTRY.forEach(listener -> listener.onImageEvent(imageEvent));
     }
 }

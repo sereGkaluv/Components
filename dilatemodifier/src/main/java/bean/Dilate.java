@@ -1,7 +1,7 @@
 package bean;
 
 import annotations.TargetDescriptor;
-import filer.DilateFilter;
+import filter.DilateFilter;
 import impl.ImageEvent;
 import impl.ImageEventHandler;
 import interfaces.ImageListener;

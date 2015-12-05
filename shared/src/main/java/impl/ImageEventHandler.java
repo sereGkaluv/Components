@@ -27,6 +27,8 @@ public abstract class ImageEventHandler implements EventHandler<ImageListener, I
 
     @Override
     public void notifyAllListeners(ImageEvent imageEvent) {
-        IMAGE_LISTENER_REGISTRY.forEach(listener -> listener.onImageEvent(imageEvent));
+        if (!IMAGE_LISTENER_REGISTRY.isEmpty()) {
+            IMAGE_LISTENER_REGISTRY.forEach(listener -> listener.onImageEvent(imageEvent));
+        }
     }
 }

@@ -59,7 +59,7 @@ public abstract class DataMergeFilter<T, U, V> implements Readable<V>, Runnable 
 
         T baseEntity = readBaseInput();
         U overEntity = readOverInput();
-        if (baseEntity != null && overEntity != null) return process(baseEntity, overEntity);
+        if (baseEntity != null || overEntity != null) return process(baseEntity, overEntity);
         return null;
     }
 
@@ -75,9 +75,9 @@ public abstract class DataMergeFilter<T, U, V> implements Readable<V>, Runnable 
                 baseValue = readBaseInput();
                 overValue = readOverInput();
 
-                if (baseValue != null && overValue != null) writeOutput(process(baseValue, overValue));
+                if (baseValue != null || overValue != null) writeOutput(process(baseValue, overValue));
 
-            } while (baseValue != null && overValue != null);
+            } while (baseValue != null || overValue != null);
 
             sendEndSignal();
         } catch (StreamCorruptedException e) {

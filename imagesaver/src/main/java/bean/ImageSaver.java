@@ -17,7 +17,7 @@ public class ImageSaver extends ImageEventHandler implements ImageListener {
     private static final String FILE_FORMAT = "png";
 
     @TargetDescriptor
-    private transient String _imagePath = "";
+    private String _imagePath = "";
 
     public ImageSaver() {
     }

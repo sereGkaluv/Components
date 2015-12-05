@@ -14,23 +14,23 @@ import java.beans.SimpleBeanInfo;
 /**
  * Created by sereGkaluv on 23-Nov-15.
  */
-public class ImageVisualiserBeanInfo extends SimpleBeanInfo {
+public class CalcCentroidsBeanInfo extends SimpleBeanInfo {
 
-    public ImageVisualiserBeanInfo() {
+    public CalcCentroidsBeanInfo() {
     }
 
     @Override
     public PropertyDescriptor[] getPropertyDescriptors() {
-        return PropertyHelper.getPropertyDescriptors(ImageVisualiser.class);
+        return PropertyHelper.getPropertyDescriptors(CalcCentroids.class);
     }
 
     @Override
     public EventSetDescriptor[] getEventSetDescriptors() {
-        return EventHelper.getEventSetDescriptors(ImageVisualiser.class, ImageEvent.class, ImageListener.class);
+        return EventHelper.getEventSetDescriptors(CalcCentroids.class, ImageEvent.class, ImageListener.class);
     }
 
     @Override
     public MethodDescriptor[] getMethodDescriptors() {
-        return MethodHelper.getMethodDescriptors(ImageVisualiser.class);
+        return MethodHelper.getMethodDescriptors(CalcCentroids.class);
     }
 }
