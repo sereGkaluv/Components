@@ -46,6 +46,6 @@ public class ROIFilter extends EnhancedDataTransformationFilter<ImageEvent> {
         );
 
         //Setting shift value to event.
-        return new ImageEvent(this, image, (int) _roi.getX(), (int) _roi.getY());
+        return new ImageEvent(this, roiImage, (int) _roi.getX(), (int) _roi.getY());
     }
 }

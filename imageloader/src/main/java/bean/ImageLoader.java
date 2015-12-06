@@ -25,6 +25,7 @@ public class ImageLoader extends ImageEventHandler implements Runnable {
 
     public void setImagePath(String imagePath) {
         _imagePath = imagePath;
+        run();
     }
 
     @Override

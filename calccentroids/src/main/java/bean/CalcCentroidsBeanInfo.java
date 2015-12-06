@@ -26,7 +26,7 @@ public class CalcCentroidsBeanInfo extends SimpleBeanInfo {
 
     @Override
     public EventSetDescriptor[] getEventSetDescriptors() {
-        return EventHelper.getEventSetDescriptors(CalcCentroids.class, ImageEvent.class, ImageListener.class);
+        return new EventSetDescriptor[]{};
     }
 
     @Override
