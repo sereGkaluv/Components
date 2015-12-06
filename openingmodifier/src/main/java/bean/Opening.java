@@ -17,22 +17,12 @@ import java.io.StreamCorruptedException;
  */
 public class Opening extends ImageEventHandler implements ImageListener {
 
-    @TargetDescriptor
     private Kernel _kernel = new Kernel();
 
     private ImageEvent _lastImageEvent;
 
     public Opening() {
         super();
-    }
-
-    public Kernel getKernel() {
-        return _kernel;
-    }
-
-    public void setKernel(Kernel kernel) {
-        _kernel = kernel;
-        reload();
     }
 
     @Override
@@ -62,6 +52,5 @@ public class Opening extends ImageEventHandler implements ImageListener {
 
     @Override
     public void vetoableChange(PropertyChangeEvent evt) throws PropertyVetoException {
-        //TODO
     }
 }
