@@ -5,6 +5,7 @@ import filter.ErodeFilter;
 import impl.ImageEvent;
 import impl.ImageEventHandler;
 import interfaces.ImageListener;
+import pipes.SupplierPipe;
 import util.Kernel;
 
 import java.io.StreamCorruptedException;
@@ -38,7 +39,7 @@ public class Erode extends ImageEventHandler implements ImageListener {
             _lastImageEvent = imageEvent;
 
             ErodeFilter erodeFilter = new ErodeFilter(
-                () -> imageEvent,
+                new SupplierPipe<>(imageEvent),
                 _kernel
             );
 

@@ -1,10 +1,7 @@
 package bean;
 
-import impl.DescriptorHelpers.EventHelper;
 import impl.DescriptorHelpers.MethodHelper;
 import impl.DescriptorHelpers.PropertyHelper;
-import impl.ImageEvent;
-import interfaces.ImageListener;
 
 import java.beans.EventSetDescriptor;
 import java.beans.MethodDescriptor;
@@ -26,7 +23,7 @@ public class ImageVisualiserBeanInfo extends SimpleBeanInfo {
 
     @Override
     public EventSetDescriptor[] getEventSetDescriptors() {
-        return EventHelper.getEventSetDescriptors(ImageVisualiser.class, ImageEvent.class, ImageListener.class);
+        return new EventSetDescriptor[]{};
     }
 
     @Override

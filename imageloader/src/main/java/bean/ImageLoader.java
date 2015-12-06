@@ -1,11 +1,11 @@
 package bean;
 
+import annotations.TargetDescriptor;
 import impl.ImageEvent;
 import impl.ImageEventHandler;
 
 import javax.imageio.ImageIO;
 import javax.media.jai.PlanarImage;
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 
@@ -13,7 +13,8 @@ import java.io.IOException;
  * Created by sereGkaluv on 23-Nov-15.
  */
 public class ImageLoader extends ImageEventHandler implements Runnable {
-    private transient String _imagePath = "";
+    @TargetDescriptor
+    private String _imagePath = "";
 
     public ImageLoader() {
     }
@@ -24,13 +25,12 @@ public class ImageLoader extends ImageEventHandler implements Runnable {
 
     public void setImagePath(String imagePath) {
         _imagePath = imagePath;
-        new Thread(this).start();
     }
 
     @Override
     public void run() {
         try {
-            ImageEvent imageEvent = new ImageEvent(this, loadImage(getImagePath()));
+            ImageEvent imageEvent = new ImageEvent(this, loadImage(getImagePath()), 0, 0);
             notifyAllListeners(imageEvent);
         } catch (IllegalArgumentException e) {
             e.printStackTrace();

@@ -4,13 +4,15 @@ import interfaces.EventHandler;
 import interfaces.ImageListener;
 
 import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Set;
 
 /**
  * Created by sereGkaluv on 02-Dec-15.
  */
 public abstract class ImageEventHandler implements EventHandler<ImageListener, ImageEvent> {
-    private static final Set<ImageListener> IMAGE_LISTENER_REGISTRY = new HashSet<>();
+    private final List<ImageListener> IMAGE_LISTENER_REGISTRY = new LinkedList<>();
 
     protected ImageEventHandler() {
     }
@@ -28,7 +30,11 @@ public abstract class ImageEventHandler implements EventHandler<ImageListener, I
     @Override
     public void notifyAllListeners(ImageEvent imageEvent) {
         if (!IMAGE_LISTENER_REGISTRY.isEmpty()) {
-            IMAGE_LISTENER_REGISTRY.forEach(listener -> listener.onImageEvent(imageEvent));
+            List<ImageListener> listenerList = new LinkedList<>(IMAGE_LISTENER_REGISTRY);
+
+            for (ImageListener listener : listenerList) {
+                listener.onImageEvent(imageEvent);
+            }
         }
     }
 }

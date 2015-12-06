@@ -4,6 +4,7 @@ import annotations.TargetDescriptor;
 import filter.OpeningFilter;
 import impl.ImageEvent;
 import impl.ImageEventHandler;
+import pipes.SupplierPipe;
 import util.Kernel;
 import interfaces.ImageListener;
 
@@ -38,7 +39,7 @@ public class Opening extends ImageEventHandler implements ImageListener {
             _lastImageEvent = imageEvent;
 
             OpeningFilter openingFilter = new OpeningFilter(
-                () -> imageEvent,
+                new SupplierPipe<>(imageEvent),
                 _kernel
             );
 

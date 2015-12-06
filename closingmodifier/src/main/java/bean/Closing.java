@@ -6,6 +6,7 @@ import filter.ClosingFilter;
 import impl.ImageEvent;
 import impl.ImageEventHandler;
 import interfaces.ImageListener;
+import pipes.SupplierPipe;
 import util.Kernel;
 
 import java.io.StreamCorruptedException;
@@ -38,7 +39,7 @@ public class Closing extends ImageEventHandler implements ImageListener {
             _lastImageEvent = imageEvent;
 
             ClosingFilter closingFilter = new ClosingFilter(
-                () -> imageEvent,
+                new SupplierPipe<>(imageEvent),
                 _kernel
             );
 

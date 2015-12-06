@@ -3,7 +3,6 @@ package filter;
 import impl.ImageEvent;
 import interfaces.Readable;
 import interfaces.Writable;
-import util.JAIOperators;
 
 import javax.media.jai.PlanarImage;
 import java.awt.*;
@@ -14,21 +13,21 @@ import java.security.InvalidParameterException;
  */
 public class ROIFilter extends EnhancedDataTransformationFilter<ImageEvent> {
 
-    private final Region _roi;
+    private final Rectangle _roi;
 
-    public ROIFilter(Readable<ImageEvent> input, Writable<ImageEvent> output, Region roi)
+    public ROIFilter(Readable<ImageEvent> input, Writable<ImageEvent> output, Rectangle roi)
     throws InvalidParameterException {
         super(input, output);
         _roi = roi;
     }
 
-    public ROIFilter(Readable<ImageEvent> input, Region roi)
+    public ROIFilter(Readable<ImageEvent> input, Rectangle roi)
     throws InvalidParameterException {
         super(input);
         _roi = roi;
     }
 
-    public ROIFilter(Writable<ImageEvent> output, Region roi)
+    public ROIFilter(Writable<ImageEvent> output, Rectangle roi)
     throws InvalidParameterException {
         super(output);
         _roi = roi;
@@ -41,15 +40,12 @@ public class ROIFilter extends EnhancedDataTransformationFilter<ImageEvent> {
         //Recreating a new Planar Image cropped by given _roi Rectangle.
         PlanarImage roiImage = PlanarImage.wrapRenderedImage(
             image.getAsBufferedImage(
-                new Rectangle(_roi.getX(), _roi.getY(), _roi.getWidth(), _roi.getHeight()),
+                _roi,
                 image.getColorModel()
             )
         );
 
-        //Setting shift value to planar image.
-        roiImage.setProperty(JAIOperators.THRESHOLD_X.getOperatorValue(), _roi.getX());
-        roiImage.setProperty(JAIOperators.THRESHOLD_Y.getOperatorValue(), _roi.getY());
-
-        return new ImageEvent(this, image);
+        //Setting shift value to event.
+        return new ImageEvent(this, image, (int) _roi.getX(), (int) _roi.getY());
     }
 }

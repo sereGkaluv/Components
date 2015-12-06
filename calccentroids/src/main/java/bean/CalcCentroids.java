@@ -4,6 +4,7 @@ import annotations.TargetDescriptor;
 import filter.CalcCentroidsFilter;
 import impl.ImageEvent;
 import interfaces.ImageListener;
+import pipes.SupplierPipe;
 import util.Coordinate;
 
 import java.awt.*;
@@ -80,7 +81,9 @@ public class CalcCentroids extends TextArea implements ImageListener {
         try {
             _lastImageEvent = imageEvent;
 
-            CalcCentroidsFilter centroidsFilter = new CalcCentroidsFilter(imageEvent::getImage);
+            CalcCentroidsFilter centroidsFilter = new CalcCentroidsFilter(
+                new SupplierPipe<>(imageEvent)
+            );
 
             List<Coordinate> coordinateList = centroidsFilter.read();
             if (coordinateList != null && !coordinateList.isEmpty()) {

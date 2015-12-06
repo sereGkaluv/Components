@@ -45,11 +45,8 @@ public class ThresholdFilter extends EnhancedDataTransformationFilter<ImageEvent
             pb
         );
 
-        //Coping image properties.
-        copyImageProperties(newImage, imageEvent.getImage());
-
         //Returning new event.
-        return new ImageEvent(this, newImage);
+        return new ImageEvent(this, newImage, imageEvent.getShiftX(), imageEvent.getShiftY());
     }
 
     /**
@@ -67,27 +64,5 @@ public class ThresholdFilter extends EnhancedDataTransformationFilter<ImageEvent
             pb.add(parameterGroup);
         }
         return pb.addSource(image);
-    }
-
-    /**
-     * Copies all the parameters to new image from source .
-     *
-     * @param newImage image to which properties will be copied.
-     * @param sourceImage image from which properties will be copied.
-     */
-    private void copyImageProperties(PlanarImage newImage, PlanarImage sourceImage) {
-        if (sourceImage.getProperty(JAIOperators.THRESHOLD_X.getOperatorValue()) != null) {
-            newImage.setProperty(
-                JAIOperators.THRESHOLD_X.getOperatorValue(),
-                sourceImage.getProperty(JAIOperators.THRESHOLD_X.getOperatorValue())
-            );
-        }
-
-        if (sourceImage.getProperty(JAIOperators.THRESHOLD_Y.getOperatorValue()) != null) {
-            newImage.setProperty(
-                JAIOperators.THRESHOLD_Y.getOperatorValue(),
-                sourceImage.getProperty(JAIOperators.THRESHOLD_Y.getOperatorValue())
-            );
-        }
     }
 }

@@ -1,7 +1,7 @@
 package filter;
 
+import impl.ImageEvent;
 import util.Coordinate;
-import util.JAIOperators;
 import interfaces.Readable;
 import interfaces.Writable;
 
@@ -19,20 +19,20 @@ import java.util.Set;
  * all other pixels in the image are expected to have a pixel value < 255
  * use this filter adapting eventually the package name
  */
-public class CalcCentroidsFilter extends DataEnrichmentFilter<PlanarImage, List<Coordinate>> {
+public class CalcCentroidsFilter extends DataEnrichmentFilter<ImageEvent, List<Coordinate>> {
     private static final Set<Coordinate> CLOSED_LIST = new HashSet<>();
     private static final List<List<Coordinate>> FIGURES = new LinkedList<>();
     private static final int TARGET_COLOR = 255;
 
-    private PlanarImage _image;
+    private ImageEvent _imageEvent;
 
-    public CalcCentroidsFilter(Readable<PlanarImage> input, Writable<List<Coordinate>> output)
+    public CalcCentroidsFilter(Readable<ImageEvent> input, Writable<List<Coordinate>> output)
     throws InvalidParameterException {
         super(input, output);
     }
 
 
-    public CalcCentroidsFilter(Readable<PlanarImage> input)
+    public CalcCentroidsFilter(Readable<ImageEvent> input)
     throws InvalidParameterException {
         super(input);
     }
@@ -43,7 +43,7 @@ public class CalcCentroidsFilter extends DataEnrichmentFilter<PlanarImage, List<
     }
 
     @Override
-    protected boolean fillEntity(PlanarImage nextVal, List<Coordinate> entity) {
+    protected boolean fillEntity(ImageEvent nextVal, List<Coordinate> entity) {
         if (nextVal == null) {
             try {
                 sendEndSignal();
@@ -53,7 +53,7 @@ public class CalcCentroidsFilter extends DataEnrichmentFilter<PlanarImage, List<
             }
         }
 
-        _image = nextVal;
+        _imageEvent = nextVal;
 
         entity.addAll(process(nextVal));
         return true;
@@ -64,18 +64,23 @@ public class CalcCentroidsFilter extends DataEnrichmentFilter<PlanarImage, List<
         return new LinkedList<>();
     }
 
-    private List<Coordinate> process(PlanarImage entity) {
-        final Raster raster = entity.getAsBufferedImage().getRaster();
+    private List<Coordinate> process(ImageEvent imageEvent) {
+        PlanarImage image = imageEvent.getImage();
 
-        for (int x = 0; x < raster.getWidth(); ++x) {
-            for (int y = 0; y < raster.getHeight(); ++y) {
+        if (image != null) {
 
-                if (isPixelOfColor(x, y, raster, TARGET_COLOR)) {
+            final Raster raster = image.getAsBufferedImage().getRaster();
 
-                    Coordinate coordinate = new Coordinate(x, y);
-                    if(!CLOSED_LIST.contains(coordinate)) {
-                        //If there is a not visited black pixel, save all pixels belonging to the same figure.
-                        getNextFigure(coordinate, raster);
+            for (int x = 0; x < raster.getWidth(); ++x) {
+                for (int y = 0; y < raster.getHeight(); ++y) {
+
+                    if (isPixelOfColor(x, y, raster, TARGET_COLOR)) {
+
+                        Coordinate coordinate = new Coordinate(x, y);
+                        if (!CLOSED_LIST.contains(coordinate)) {
+                            //If there is a not visited black pixel, save all pixels belonging to the same figure.
+                            getNextFigure(coordinate, raster);
+                        }
                     }
                 }
             }
@@ -119,27 +124,30 @@ public class CalcCentroidsFilter extends DataEnrichmentFilter<PlanarImage, List<
     private List<Coordinate> calculateCentroids() {
         final List<Coordinate> centroids = new LinkedList<>();
 
-        for (List<Coordinate> figure : FIGURES) {
+        if(_imageEvent != null) {
 
-            //Finding average coordinate.
-            int xA = 0;
-            int yA = 0;
+            for (List<Coordinate> figure : FIGURES) {
 
-            for (Coordinate c : figure) {
-                xA += c._x;
-                yA += c._y;
+                //Finding average coordinate.
+                int xA = 0;
+                int yA = 0;
+
+                for (Coordinate c : figure) {
+                    xA += c._x;
+                    yA += c._y;
+                }
+
+                xA /= figure.size();
+                yA /= figure.size();
+
+                int thresholdX = _imageEvent.getShiftX();
+                int thresholdY = _imageEvent.getShiftY();
+
+                centroids.add(new Coordinate(
+                    xA + thresholdX,
+                    yA + thresholdY
+                ));
             }
-
-            xA /= figure.size();
-            yA /= figure.size();
-
-            double thresholdX = (double) _image.getProperty(JAIOperators.THRESHOLD_X.getOperatorValue());
-            double thresholdY = (double) _image.getProperty(JAIOperators.THRESHOLD_Y.getOperatorValue());
-
-            centroids.add(new Coordinate(
-                xA + (int) thresholdX,
-                yA + (int) thresholdY
-            ));
         }
 
         return !centroids.isEmpty() ? centroids : null;

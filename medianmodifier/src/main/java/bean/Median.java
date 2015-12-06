@@ -5,6 +5,7 @@ import filter.MedianFilter;
 import impl.ImageEvent;
 import impl.ImageEventHandler;
 import interfaces.ImageListener;
+import pipes.SupplierPipe;
 
 import java.io.StreamCorruptedException;
 
@@ -36,7 +37,7 @@ public class Median extends ImageEventHandler implements ImageListener {
             _lastImageEvent = imageEvent;
 
             MedianFilter medianFilter = new MedianFilter(
-                () -> imageEvent,
+                new SupplierPipe<>(imageEvent),
                 _maskSize
             );
 

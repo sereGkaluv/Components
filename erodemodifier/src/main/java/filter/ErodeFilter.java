@@ -42,11 +42,8 @@ public class ErodeFilter  extends EnhancedDataTransformationFilter<ImageEvent> {
         //Eroding source image.
         PlanarImage erodedImage = performTransformationStep(JAIOperators.ERODE, imageEvent.getImage());
 
-        //Coping image properties.
-        copyImageProperties(erodedImage, imageEvent.getImage());
-
         //Returning new event.
-        return new ImageEvent(this, erodedImage);
+        return new ImageEvent(this, erodedImage, imageEvent.getShiftX(), imageEvent.getShiftY());
     }
 
     /**
@@ -62,27 +59,5 @@ public class ErodeFilter  extends EnhancedDataTransformationFilter<ImageEvent> {
             operator.getOperatorValue(),
             new ParameterBlock().add(_kernel).addSource(image)
         );
-    }
-
-    /**
-     * Copies all the parameters to new image from source .
-     *
-     * @param newImage image to which properties will be copied.
-     * @param sourceImage image from which properties will be copied.
-     */
-    private void copyImageProperties(PlanarImage newImage, PlanarImage sourceImage) {
-        if (sourceImage.getProperty(JAIOperators.THRESHOLD_X.getOperatorValue()) != null) {
-            newImage.setProperty(
-                JAIOperators.THRESHOLD_X.getOperatorValue(),
-                sourceImage.getProperty(JAIOperators.THRESHOLD_X.getOperatorValue())
-            );
-        }
-
-        if (sourceImage.getProperty(JAIOperators.THRESHOLD_Y.getOperatorValue()) != null) {
-            newImage.setProperty(
-                JAIOperators.THRESHOLD_Y.getOperatorValue(),
-                sourceImage.getProperty(JAIOperators.THRESHOLD_Y.getOperatorValue())
-            );
-        }
     }
 }

@@ -5,6 +5,7 @@ import filter.ThresholdFilter;
 import impl.ImageEvent;
 import impl.ImageEventHandler;
 import interfaces.ImageListener;
+import pipes.SupplierPipe;
 
 import java.io.StreamCorruptedException;
 
@@ -58,7 +59,7 @@ public class Threshold extends ImageEventHandler implements ImageListener {
             _lastImageEvent = imageEvent;
 
             ThresholdFilter thresholdFilter = new ThresholdFilter(
-                () -> imageEvent,
+                new SupplierPipe<>(imageEvent),
                 new double[]{_colorFrom},
                 new double[]{_colorTo},
                 new double[]{_targetColor}

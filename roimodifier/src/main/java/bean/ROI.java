@@ -2,12 +2,13 @@ package bean;
 
 import annotations.TargetDescriptor;
 
-import filter.Region;
 import filter.ROIFilter;
 import impl.ImageEventHandler;
 import impl.ImageEvent;
 import interfaces.ImageListener;
+import pipes.SupplierPipe;
 
+import java.awt.*;
 import java.io.StreamCorruptedException;
 
 /**
@@ -70,9 +71,11 @@ public class ROI extends ImageEventHandler implements ImageListener {
         try {
             _lastImageEvent = imageEvent;
 
-            Region roi = new Region(getX(), getY(), getWidth(), getHeight());
+            ROIFilter roiFilter = new ROIFilter(
+                new SupplierPipe<>(imageEvent),
+                new Rectangle(getX(), getY(), getWidth(), getHeight())
+            );
 
-            ROIFilter roiFilter = new ROIFilter(() -> imageEvent, roi);
             ImageEvent result = roiFilter.read();
 
             notifyAllListeners(result);

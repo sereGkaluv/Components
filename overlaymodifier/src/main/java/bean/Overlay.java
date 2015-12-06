@@ -5,6 +5,7 @@ import filter.OverlayFilter;
 import impl.ImageEvent;
 import impl.ImageEventHandler;
 import interfaces.ImageListener;
+import pipes.SupplierPipe;
 
 import java.io.StreamCorruptedException;
 
@@ -33,8 +34,8 @@ public class Overlay extends ImageEventHandler implements ImageListener {
             if (_lastLeftImageEvent != null && _lastRightImageEvent != null) {
 
                 OverlayFilter overlayFilter = new OverlayFilter(
-                    () -> _lastLeftImageEvent,
-                    () -> _lastRightImageEvent
+                    new SupplierPipe<>(_lastLeftImageEvent),
+                    new SupplierPipe<>(_lastRightImageEvent)
                 );
 
                 ImageEvent result = overlayFilter.read();

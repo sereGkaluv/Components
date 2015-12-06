@@ -1,6 +1,8 @@
 package bean;
 
-import java.beans.IntrospectionException;
+import impl.DescriptorHelpers.PropertyHelper;
+
+import java.beans.EventSetDescriptor;
 import java.beans.MethodDescriptor;
 import java.beans.PropertyDescriptor;
 import java.beans.SimpleBeanInfo;
@@ -13,14 +15,12 @@ public class ImageLoaderBeanInfo extends SimpleBeanInfo {
 
     @Override
     public PropertyDescriptor[] getPropertyDescriptors() {
-        try {
-            PropertyDescriptor pd1 = new PropertyDescriptor(PROP_IMAGE_PATH, ImageLoader.class);
+        return PropertyHelper.getPropertyDescriptors(ImageLoader.class);
+    }
 
-            return new PropertyDescriptor[]{pd1};
-        } catch (IntrospectionException e) {
-            e.printStackTrace();
-            return null;
-        }
+    @Override
+    public EventSetDescriptor[] getEventSetDescriptors() {
+        return new EventSetDescriptor[]{};
     }
 
     @Override
