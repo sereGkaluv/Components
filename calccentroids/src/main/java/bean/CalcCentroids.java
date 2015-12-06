@@ -8,6 +8,8 @@ import pipes.SupplierPipe;
 import util.Coordinate;
 
 import java.awt.*;
+import java.beans.*;
+import java.io.File;
 import java.io.IOException;
 import java.io.StreamCorruptedException;
 import java.util.Enumeration;
@@ -18,8 +20,18 @@ import java.util.Properties;
 /**
  * Created by sereGkaluv on 23-Nov-15.
  */
-public class CalcCentroids extends TextArea implements ImageListener {
+public class CalcCentroids extends TextArea
+implements ImageListener, VetoableChangeListener, PropertyChangeListener {
+    private static final String WIDTH = "width";
+    private static final String HEIGHT = "height";
+    private static final String ACCURACY = "accuracy";
+    private static final String CENTROIDS_FILE_PATH = "centroidsFilePath";
     private static final String RESULT_FAILED = "FAILED.";
+    private static final int MIN_SIZE_VALUE = 0;
+    private static final int MIN_ACCURACY_VALUE = 1;
+
+    private final PropertyChangeSupport _pcs = new PropertyChangeSupport(this);
+    private final VetoableChangeSupport _vcs = new VetoableChangeSupport(this);
 
     @TargetDescriptor
     private int _width = 150;
@@ -30,11 +42,14 @@ public class CalcCentroids extends TextArea implements ImageListener {
     @TargetDescriptor
     private String _centroidsFilePath = "";
 
-    private ImageEvent _lastImageEvent;
+    private transient ImageEvent _lastImageEvent;
 
     public CalcCentroids() {
         setColumns(1);
-        setSize(_width, _height);
+        setSize(getWidth(), getHeight());
+
+        _pcs.addPropertyChangeListener(this);
+        _vcs.addVetoableChangeListener(this);
     }
 
     @Override
@@ -42,9 +57,13 @@ public class CalcCentroids extends TextArea implements ImageListener {
         return _width;
     }
 
-    public void setWidth(int width) {
+    public void setWidth(int width)
+    throws PropertyVetoException {
+        int temp = _width;
+        fireVetoableChange(this, WIDTH, temp, width);
+
         _width = width;
-        reload();
+        firePropertyChange(this, WIDTH, temp, width);
     }
 
     @Override
@@ -52,27 +71,39 @@ public class CalcCentroids extends TextArea implements ImageListener {
         return _height;
     }
 
-    public void setHeight(int height) {
+    public void setHeight(int height)
+    throws PropertyVetoException {
+        int temp = _height;
+        fireVetoableChange(this, HEIGHT, temp, height);
+
         _height = height;
-        reload();
+        firePropertyChange(this, HEIGHT, temp, height);
     }
 
     public int getAccuracy() {
         return _accuracy;
     }
 
-    public void setAccuracy(int accuracy) {
+    public void setAccuracy(int accuracy)
+    throws PropertyVetoException {
+        int temp = _accuracy;
+        fireVetoableChange(this, ACCURACY, temp, accuracy);
+
         _accuracy = accuracy;
-        reload();
+        firePropertyChange(this, ACCURACY, temp, accuracy);
     }
 
     public String getCentroidsFilePath() {
         return _centroidsFilePath;
     }
 
-    public void setCentroidsFilePath(String centroidsFilePath) {
+    public void setCentroidsFilePath(String centroidsFilePath)
+    throws PropertyVetoException {
+        String temp = _centroidsFilePath;
+        fireVetoableChange(this, CENTROIDS_FILE_PATH, temp, centroidsFilePath);
+
         _centroidsFilePath = centroidsFilePath;
-        reload();
+        firePropertyChange(this, CENTROIDS_FILE_PATH, temp, centroidsFilePath);
     }
 
     @Override
@@ -215,7 +246,122 @@ public class CalcCentroids extends TextArea implements ImageListener {
         return "INFO. Expected [" + should._x + ", " + should._y + "] | Received [" + is._x + ", " + is._y + "]\r\n\r\n";
     }
 
-    private void reload() {
+    protected void reload() {
         if (_lastImageEvent != null) onImageEvent(_lastImageEvent);
+    }
+
+    protected void firePropertyChange(
+        Object source,
+        String propertyName,
+        Object oldValue,
+        Object newValue
+    ) {
+
+        _pcs.firePropertyChange(
+            new PropertyChangeEvent(source, propertyName, oldValue, newValue)
+        );
+    }
+
+    protected void fireVetoableChange(
+        Object source,
+        String propertyName,
+        Object oldValue,
+        Object newValue
+    ) throws PropertyVetoException {
+
+        _vcs.fireVetoableChange(
+                new PropertyChangeEvent(source, propertyName, oldValue, newValue)
+        );
+    }
+
+    @Override
+    public void propertyChange(PropertyChangeEvent evt) {
+        Object source = evt.getSource();
+
+        if (source instanceof CalcCentroids) {
+            ((CalcCentroids) source).reload();
+        }
+    }
+
+    @Override
+    public void vetoableChange(PropertyChangeEvent evt) throws PropertyVetoException {
+        String propertyName = evt.getPropertyName();
+
+        if (propertyName != null) {
+
+            switch (propertyName) {
+
+                case WIDTH: {
+                    Integer newWidth = (Integer) evt.getNewValue();
+
+                    if (newWidth == null) {
+                        String msg = "Width should not be null.";
+                        throw new PropertyVetoException(msg, evt);
+                    }
+
+                    int width = newWidth;
+
+                    if (width < MIN_SIZE_VALUE) {
+                        String msg = "Width size should be > " + MIN_SIZE_VALUE + ".";
+                        throw new PropertyVetoException(msg, evt);
+                    }
+
+                    break;
+                }
+
+                case HEIGHT: {
+                    Integer newHeight = (Integer) evt.getNewValue();
+
+                    if (newHeight == null) {
+                        String msg = "Height should not be null.";
+                        throw new PropertyVetoException(msg, evt);
+                    }
+
+                    int height = newHeight;
+
+                    if (height < MIN_SIZE_VALUE) {
+                        String msg = "Height size should be > " + MIN_SIZE_VALUE + ".";
+                        throw new PropertyVetoException(msg, evt);
+                    }
+
+                    break;
+                }
+
+                case ACCURACY: {
+                    Integer newAccuracy = (Integer) evt.getNewValue();
+
+                    if (newAccuracy == null) {
+                        String msg = "Accuracy should not be null.";
+                        throw new PropertyVetoException(msg, evt);
+                    }
+
+                    int accuracy = newAccuracy;
+
+                    if (accuracy < MIN_ACCURACY_VALUE) {
+                        String msg = "Accuracy size should be > " + MIN_ACCURACY_VALUE + ".";
+                        throw new PropertyVetoException(msg, evt);
+                    }
+
+                    break;
+                }
+
+                case CENTROIDS_FILE_PATH: {
+                    String newPath = (String) evt.getNewValue();
+
+                    if (newPath == null || newPath.trim().isEmpty()) {
+                        String msg = "Centroids path should not be empty.";
+                        throw new PropertyVetoException(msg, evt);
+                    }
+
+                    File file = new File(newPath);
+                    if(!file.exists() || file.isDirectory()) {
+                        String msg = "Centroids path should target existing file.";
+                        throw new PropertyVetoException(msg, evt);
+                    }
+
+                    break;
+                }
+            }
+        }
     }
 }

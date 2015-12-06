@@ -8,6 +8,8 @@ import pipes.SupplierPipe;
 import util.Kernel;
 import interfaces.ImageListener;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyVetoException;
 import java.io.StreamCorruptedException;
 
 /**
@@ -21,6 +23,7 @@ public class Opening extends ImageEventHandler implements ImageListener {
     private ImageEvent _lastImageEvent;
 
     public Opening() {
+        super();
     }
 
     public Kernel getKernel() {
@@ -52,7 +55,13 @@ public class Opening extends ImageEventHandler implements ImageListener {
         }
     }
 
-    private void reload() {
+    @Override
+    protected void reload() {
         if (_lastImageEvent != null) onImageEvent(_lastImageEvent);
+    }
+
+    @Override
+    public void vetoableChange(PropertyChangeEvent evt) throws PropertyVetoException {
+        //TODO
     }
 }

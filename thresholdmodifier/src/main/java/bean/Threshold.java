@@ -4,52 +4,74 @@ import annotations.TargetDescriptor;
 import filter.ThresholdFilter;
 import impl.ImageEvent;
 import impl.ImageEventHandler;
+import impl.vetoablehelpers.IntegerVetoable;
 import interfaces.ImageListener;
 import pipes.SupplierPipe;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyVetoException;
 import java.io.StreamCorruptedException;
 
 /**
  * Created by sereGkaluv on 02-Dec-15.
  */
 public class Threshold extends ImageEventHandler implements ImageListener {
+    private static final String COLOR_FROM = "colorFrom";
+    public static final String COLOR_TO = "colorTo";
+    public static final String TARGET_COLOR = "targetColor";
+    private static final int MIN_COLOR = 0;
+    private static final int MAX_COLOR = 255;
+
     @TargetDescriptor
-    private int _colorFrom = 0;
+    private int _colorFrom = MIN_COLOR;
     @TargetDescriptor
-    private int _colorTo = 0;
+    private int _colorTo = MAX_COLOR;
     @TargetDescriptor
-    private int _targetColor = 0;
+    private int _targetColor = MIN_COLOR;
 
     private ImageEvent _lastImageEvent;
 
     public Threshold() {
+        super();
     }
 
     public int getColorFrom() {
         return _colorFrom;
     }
 
-    public void setColorFrom(int colorFrom) {
+    public void setColorFrom(int colorFrom)
+    throws PropertyVetoException {
+        int temp = _colorFrom;
+        fireVetoableChange(this, COLOR_FROM, temp, colorFrom);
+
         _colorFrom = colorFrom;
-        reload();
+        firePropertyChange(this, COLOR_FROM, temp, colorFrom);
     }
 
     public int getColorTo() {
         return _colorTo;
     }
 
-    public void setColorTo(int colorTo) {
+    public void setColorTo(int colorTo)
+    throws PropertyVetoException {
+        int temp = _colorTo;
+        fireVetoableChange(this, COLOR_TO, temp, colorTo);
+
         _colorTo = colorTo;
-        reload();
+        firePropertyChange(this, COLOR_TO, temp, colorTo);
     }
 
     public int getTargetColor() {
         return _targetColor;
     }
 
-    public void setTargetColor(int targetColor) {
+    public void setTargetColor(int targetColor)
+    throws PropertyVetoException {
+        int temp = _targetColor;
+        fireVetoableChange(this, TARGET_COLOR, temp, targetColor);
+
         _targetColor = targetColor;
-        reload();
+        firePropertyChange(this, TARGET_COLOR, temp, targetColor);
     }
 
     @Override
@@ -74,7 +96,34 @@ public class Threshold extends ImageEventHandler implements ImageListener {
         }
     }
 
-    private void reload() {
+    @Override
+    protected void reload() {
         if (_lastImageEvent != null) onImageEvent(_lastImageEvent);
+    }
+
+    @Override
+    public void vetoableChange(PropertyChangeEvent evt) throws PropertyVetoException {
+        String propertyName = evt.getPropertyName();
+
+        if (propertyName != null) {
+
+            switch (propertyName) {
+
+                case COLOR_FROM: {
+                    IntegerVetoable.validate(evt, MIN_COLOR, MAX_COLOR);
+                    break;
+                }
+
+                case COLOR_TO: {
+                    IntegerVetoable.validate(evt, MIN_COLOR, MAX_COLOR);
+                    break;
+                }
+
+                case TARGET_COLOR: {
+                    IntegerVetoable.validate(evt, MIN_COLOR, MAX_COLOR);
+                    break;
+                }
+            }
+        }
     }
 }

@@ -3,54 +3,72 @@ package bean;
 import annotations.TargetDescriptor;
 import impl.ImageEvent;
 import impl.ImageEventHandler;
+import impl.VetoableHelpers.FilePathVetoable;
 
 import javax.imageio.ImageIO;
 import javax.media.jai.PlanarImage;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyVetoException;
 import java.io.File;
 import java.io.IOException;
 
 /**
  * Created by sereGkaluv on 23-Nov-15.
  */
-public class ImageLoader extends ImageEventHandler implements Runnable {
+public class ImageLoader extends ImageEventHandler {
+    private static final String IMAGE_PATH = "imagePath";
+
     @TargetDescriptor
     private String _imagePath = "";
 
     public ImageLoader() {
+        super();
     }
 
     public String getImagePath() {
         return _imagePath;
     }
 
-    public void setImagePath(String imagePath) {
+    public void setImagePath(String imagePath)
+    throws PropertyVetoException {
+        String temp = _imagePath;
+        fireVetoableChange(this, IMAGE_PATH, temp, imagePath);
+
         _imagePath = imagePath;
-        run();
+        firePropertyChange(this, IMAGE_PATH, temp, imagePath);
     }
 
     @Override
-    public void run() {
+    protected void reload() {
         try {
-            ImageEvent imageEvent = new ImageEvent(this, loadImage(getImagePath()), 0, 0);
+
+            PlanarImage image = PlanarImage.wrapRenderedImage(
+                ImageIO.read(new File(getImagePath()))
+            );
+
+            ImageEvent imageEvent = new ImageEvent(this, image, 0, 0);
             notifyAllListeners(imageEvent);
-        } catch (IllegalArgumentException e) {
+
+        } catch (IOException | IllegalArgumentException e) {
             e.printStackTrace();
         }
     }
 
-    private PlanarImage loadImage(String imagePath) {
-        try {
 
-            if (imagePath != null && !imagePath.trim().isEmpty()) {
-                return PlanarImage.wrapRenderedImage(
-                    ImageIO.read(new File(imagePath))
-                );
+    @Override
+    public void vetoableChange(PropertyChangeEvent evt)
+    throws PropertyVetoException {
+        String propertyName = evt.getPropertyName();
+
+        if (propertyName != null) {
+
+            switch (propertyName) {
+
+                case IMAGE_PATH: {
+                    FilePathVetoable.validate(evt);
+                    break;
+                }
             }
-
-        } catch (IOException e) {
-            e.printStackTrace();
         }
-
-        return null;
     }
 }

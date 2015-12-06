@@ -8,61 +8,87 @@ import impl.ImageEvent;
 import interfaces.ImageListener;
 import pipes.SupplierPipe;
 
+import javax.media.jai.PlanarImage;
 import java.awt.*;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyVetoException;
 import java.io.StreamCorruptedException;
 
 /**
  * Created by sereGkaluv on 02-Dec-15.
  */
 public class ROI extends ImageEventHandler implements ImageListener {
+    private static final String X_VALUE = "x";
+    private static final String Y_VALUE = "y";
+    private static final String WIDTH = "width";
+    private static final String HEIGHT = "height";
+    private static final int MIN_VALUE = 0;
+
     @TargetDescriptor
-    private int _x = 0;
+    private int _x = MIN_VALUE;
     @TargetDescriptor
-    private int _y = 0;
+    private int _y = MIN_VALUE;
     @TargetDescriptor
-    private int _width = 0;
+    private int _width = MIN_VALUE;
     @TargetDescriptor
-    private int _height = 0;
+    private int _height = MIN_VALUE;
 
     private ImageEvent _lastImageEvent;
 
     public ROI() {
+        super();
     }
 
     public int getX() {
         return _x;
     }
 
-    public void setX(int x) {
+    public void setX(int x)
+    throws PropertyVetoException {
+        int temp = _x;
+        fireVetoableChange(this, X_VALUE, temp, x);
+
         _x = x;
-        reload();
+        firePropertyChange(this, X_VALUE, temp, x);
     }
 
     public int getY() {
         return _y;
     }
 
-    public void setY(int y) {
+    public void setY(int y)
+    throws PropertyVetoException {
+        int temp = _y;
+        fireVetoableChange(this, Y_VALUE, temp, y);
+
         _y = y;
-        reload();
+        firePropertyChange(this, Y_VALUE, temp, y);
     }
 
     public int getWidth() {
         return _width;
     }
 
-    public void setWidth(int width) {
+    public void setWidth(int width)
+    throws PropertyVetoException {
+        int temp = _width;
+        fireVetoableChange(this, WIDTH, temp, width);
+
         _width = width;
-        reload();
+        firePropertyChange(this, WIDTH, temp, width);
     }
 
     public int getHeight() {
         return _height;
     }
 
-    public void setHeight(int height) {
+    public void setHeight(int height)
+    throws PropertyVetoException {
+        int temp = _height;
+        fireVetoableChange(this, HEIGHT, temp, height);
+
         _height = height;
-        reload();
+        firePropertyChange(this, HEIGHT, temp, height);
     }
 
     @Override
@@ -85,7 +111,83 @@ public class ROI extends ImageEventHandler implements ImageListener {
         }
     }
 
-    private void reload() {
+    @Override
+    protected void reload() {
         if (_lastImageEvent != null) onImageEvent(_lastImageEvent);
+    }
+
+    @Override
+    public void vetoableChange(PropertyChangeEvent evt) throws PropertyVetoException {
+        String propertyName = evt.getPropertyName();
+
+        if (propertyName != null) {
+
+            switch (propertyName) {
+
+                case X_VALUE: {
+                    Integer newPosition = (Integer) evt.getNewValue();
+
+                    if (newPosition == null) {
+                        String msg = "X position should not be null.";
+                        throw new PropertyVetoException(msg, evt);
+                    }
+
+                    int position = newPosition;
+
+                    if (position < MIN_VALUE) {
+                        String msg = "X position should be > " + MIN_VALUE + ".";
+                        throw new PropertyVetoException(msg, evt);
+                    }
+                }
+
+                case Y_VALUE: {
+                    Integer newPosition = (Integer) evt.getNewValue();
+
+                    if (newPosition == null) {
+                        String msg = "Y position should not be null.";
+                        throw new PropertyVetoException(msg, evt);
+                    }
+
+                    int position = newPosition;
+
+                    if (position < MIN_VALUE) {
+                        String msg = "Y position should be > " + MIN_VALUE + ".";
+                        throw new PropertyVetoException(msg, evt);
+                    }
+                }
+
+                case WIDTH: {
+                    Integer newPosition = (Integer) evt.getNewValue();
+
+                    if (newPosition == null) {
+                        String msg = "Width should not be null.";
+                        throw new PropertyVetoException(msg, evt);
+                    }
+
+                    int position = newPosition;
+
+                    if (position < MIN_VALUE) {
+                        String msg = "Width should be > " + MIN_VALUE + ".";
+                        throw new PropertyVetoException(msg, evt);
+                    }
+                }
+
+                case HEIGHT: {
+                    Integer newPosition = (Integer) evt.getNewValue();
+
+                    if (newPosition == null) {
+                        String msg = "Height should not be null.";
+                        throw new PropertyVetoException(msg, evt);
+                    }
+
+                    int position = newPosition;
+
+                    if (position < MIN_VALUE) {
+                        String msg = "Height should be > " + MIN_VALUE + ".";
+                        throw new PropertyVetoException(msg, evt);
+                    }
+                }
+            }
+        }
     }
 }
