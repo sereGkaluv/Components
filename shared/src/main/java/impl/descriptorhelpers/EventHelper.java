@@ -1,4 +1,4 @@
-package impl.DescriptorHelpers;
+package impl.descriptorhelpers;
 
 import annotations.TargetDescriptor;
 

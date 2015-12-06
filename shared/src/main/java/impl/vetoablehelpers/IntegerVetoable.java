@@ -1,4 +1,4 @@
-package impl.VetoableHelpers;
+package impl.vetoablehelpers;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyVetoException;
