@@ -3,6 +3,8 @@ package bean;
 import annotations.TargetDescriptor;
 import impl.ImageEvent;
 import impl.ImageEventHandler;
+import impl.vetoablehelpers.FilePathVetoable;
+import impl.vetoablehelpers.StringVetoable;
 import interfaces.ImageListener;
 
 import javax.imageio.ImageIO;
@@ -70,12 +72,8 @@ public class ImageSaver extends ImageEventHandler implements ImageListener {
             switch (propertyName) {
 
                 case IMAGE_PATH: {
-                    String newPath = (String) evt.getNewValue();
-
-                    if (newPath == null || newPath.trim().isEmpty()) {
-                        String msg = "Image \"out\" path should not be empty.";
-                        throw new PropertyVetoException(msg, evt);
-                    }
+                    FilePathVetoable.validate(evt);
+                    break;
                 }
             }
         }

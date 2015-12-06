@@ -1,7 +1,7 @@
 package bean;
 
-import impl.DescriptorHelpers.MethodHelper;
-import impl.DescriptorHelpers.PropertyHelper;
+import impl.descriptorhelpers.MethodHelper;
+import impl.descriptorhelpers.PropertyHelper;
 
 import java.beans.EventSetDescriptor;
 import java.beans.MethodDescriptor;

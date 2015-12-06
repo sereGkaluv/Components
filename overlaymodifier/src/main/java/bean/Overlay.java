@@ -4,6 +4,7 @@ import annotations.TargetDescriptor;
 import filter.OverlayFilter;
 import impl.ImageEvent;
 import impl.ImageEventHandler;
+import impl.vetoablehelpers.BooleanVetoable;
 import interfaces.ImageListener;
 import pipes.SupplierPipe;
 
@@ -97,12 +98,7 @@ public class Overlay extends ImageEventHandler implements ImageListener {
             switch (propertyName) {
 
                 case INVERTED_INPUT: {
-                    Boolean newInputTye = (Boolean) evt.getNewValue();
-
-                    if (newInputTye == null) {
-                        String msg = "Input type should not be null.";
-                        throw new PropertyVetoException(msg, evt);
-                    }
+                    BooleanVetoable.validate(evt);
                 }
             }
         }

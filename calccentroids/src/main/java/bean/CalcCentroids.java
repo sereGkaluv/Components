@@ -3,6 +3,8 @@ package bean;
 import annotations.TargetDescriptor;
 import filter.CalcCentroidsFilter;
 import impl.ImageEvent;
+import impl.vetoablehelpers.FilePathVetoable;
+import impl.vetoablehelpers.IntegerVetoable;
 import interfaces.ImageListener;
 import pipes.SupplierPipe;
 import util.Coordinate;
@@ -292,73 +294,22 @@ implements ImageListener, VetoableChangeListener, PropertyChangeListener {
             switch (propertyName) {
 
                 case WIDTH: {
-                    Integer newWidth = (Integer) evt.getNewValue();
-
-                    if (newWidth == null) {
-                        String msg = "Width should not be null.";
-                        throw new PropertyVetoException(msg, evt);
-                    }
-
-                    int width = newWidth;
-
-                    if (width < MIN_SIZE_VALUE) {
-                        String msg = "Width size should be > " + MIN_SIZE_VALUE + ".";
-                        throw new PropertyVetoException(msg, evt);
-                    }
-
+                    IntegerVetoable.validate(evt, MIN_SIZE_VALUE);
                     break;
                 }
 
                 case HEIGHT: {
-                    Integer newHeight = (Integer) evt.getNewValue();
-
-                    if (newHeight == null) {
-                        String msg = "Height should not be null.";
-                        throw new PropertyVetoException(msg, evt);
-                    }
-
-                    int height = newHeight;
-
-                    if (height < MIN_SIZE_VALUE) {
-                        String msg = "Height size should be > " + MIN_SIZE_VALUE + ".";
-                        throw new PropertyVetoException(msg, evt);
-                    }
-
+                    IntegerVetoable.validate(evt, MIN_SIZE_VALUE);
                     break;
                 }
 
                 case ACCURACY: {
-                    Integer newAccuracy = (Integer) evt.getNewValue();
-
-                    if (newAccuracy == null) {
-                        String msg = "Accuracy should not be null.";
-                        throw new PropertyVetoException(msg, evt);
-                    }
-
-                    int accuracy = newAccuracy;
-
-                    if (accuracy < MIN_ACCURACY_VALUE) {
-                        String msg = "Accuracy size should be > " + MIN_ACCURACY_VALUE + ".";
-                        throw new PropertyVetoException(msg, evt);
-                    }
-
+                    IntegerVetoable.validate(evt, MIN_ACCURACY_VALUE);
                     break;
                 }
 
                 case CENTROIDS_FILE_PATH: {
-                    String newPath = (String) evt.getNewValue();
-
-                    if (newPath == null || newPath.trim().isEmpty()) {
-                        String msg = "Centroids path should not be empty.";
-                        throw new PropertyVetoException(msg, evt);
-                    }
-
-                    File file = new File(newPath);
-                    if(!file.exists() || file.isDirectory()) {
-                        String msg = "Centroids path should target existing file.";
-                        throw new PropertyVetoException(msg, evt);
-                    }
-
+                    FilePathVetoable.validate(evt);
                     break;
                 }
             }

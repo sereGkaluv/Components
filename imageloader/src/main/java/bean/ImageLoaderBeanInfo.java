@@ -1,6 +1,6 @@
 package bean;
 
-import impl.DescriptorHelpers.PropertyHelper;
+import impl.descriptorhelpers.PropertyHelper;
 
 import java.beans.MethodDescriptor;
 import java.beans.PropertyDescriptor;

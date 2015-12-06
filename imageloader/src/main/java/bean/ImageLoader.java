@@ -3,7 +3,7 @@ package bean;
 import annotations.TargetDescriptor;
 import impl.ImageEvent;
 import impl.ImageEventHandler;
-import impl.VetoableHelpers.FilePathVetoable;
+import impl.vetoablehelpers.FilePathVetoable;
 
 import javax.imageio.ImageIO;
 import javax.media.jai.PlanarImage;

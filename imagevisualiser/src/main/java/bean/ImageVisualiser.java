@@ -2,6 +2,7 @@ package bean;
 
 import annotations.TargetDescriptor;
 import impl.ImageEvent;
+import impl.vetoablehelpers.IntegerVetoable;
 import interfaces.EventHandler;
 import interfaces.ImageListener;
 
@@ -131,38 +132,12 @@ implements ImageListener, VetoableChangeListener, PropertyChangeListener {
             switch (propertyName) {
 
                 case WIDTH: {
-                    Integer newWidth = (Integer) evt.getNewValue();
-
-                    if (newWidth == null) {
-                        String msg = "Width should not be null.";
-                        throw new PropertyVetoException(msg, evt);
-                    }
-
-                    int width = newWidth;
-
-                    if (width < MIN_SIZE_VALUE) {
-                        String msg = "Width size should be > " + MIN_SIZE_VALUE + ".";
-                        throw new PropertyVetoException(msg, evt);
-                    }
-
+                    IntegerVetoable.validate(evt, MIN_SIZE_VALUE);
                     break;
                 }
 
                 case HEIGHT: {
-                    Integer newHeight = (Integer) evt.getNewValue();
-
-                    if (newHeight == null) {
-                        String msg = "Height should not be null.";
-                        throw new PropertyVetoException(msg, evt);
-                    }
-
-                    int height = newHeight;
-
-                    if (height < MIN_SIZE_VALUE) {
-                        String msg = "Height size should be > " + MIN_SIZE_VALUE + ".";
-                        throw new PropertyVetoException(msg, evt);
-                    }
-
+                    IntegerVetoable.validate(evt, MIN_SIZE_VALUE);
                     break;
                 }
             }

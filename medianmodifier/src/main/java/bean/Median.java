@@ -4,7 +4,7 @@ import annotations.TargetDescriptor;
 import filter.MedianFilter;
 import impl.ImageEvent;
 import impl.ImageEventHandler;
-import impl.VetoableHelpers.IntegerVetoable;
+import impl.vetoablehelpers.IntegerVetoable;
 import interfaces.ImageListener;
 import pipes.SupplierPipe;
 

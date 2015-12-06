@@ -5,6 +5,7 @@ import annotations.TargetDescriptor;
 import filter.ROIFilter;
 import impl.ImageEventHandler;
 import impl.ImageEvent;
+import impl.vetoablehelpers.IntegerVetoable;
 import interfaces.ImageListener;
 import pipes.SupplierPipe;
 
@@ -125,67 +126,23 @@ public class ROI extends ImageEventHandler implements ImageListener {
             switch (propertyName) {
 
                 case X_VALUE: {
-                    Integer newPosition = (Integer) evt.getNewValue();
-
-                    if (newPosition == null) {
-                        String msg = "X position should not be null.";
-                        throw new PropertyVetoException(msg, evt);
-                    }
-
-                    int position = newPosition;
-
-                    if (position < MIN_VALUE) {
-                        String msg = "X position should be > " + MIN_VALUE + ".";
-                        throw new PropertyVetoException(msg, evt);
-                    }
+                    IntegerVetoable.validate(evt, MIN_VALUE);
+                    break;
                 }
 
                 case Y_VALUE: {
-                    Integer newPosition = (Integer) evt.getNewValue();
-
-                    if (newPosition == null) {
-                        String msg = "Y position should not be null.";
-                        throw new PropertyVetoException(msg, evt);
-                    }
-
-                    int position = newPosition;
-
-                    if (position < MIN_VALUE) {
-                        String msg = "Y position should be > " + MIN_VALUE + ".";
-                        throw new PropertyVetoException(msg, evt);
-                    }
+                    IntegerVetoable.validate(evt, MIN_VALUE);
+                    break;
                 }
 
                 case WIDTH: {
-                    Integer newPosition = (Integer) evt.getNewValue();
-
-                    if (newPosition == null) {
-                        String msg = "Width should not be null.";
-                        throw new PropertyVetoException(msg, evt);
-                    }
-
-                    int position = newPosition;
-
-                    if (position < MIN_VALUE) {
-                        String msg = "Width should be > " + MIN_VALUE + ".";
-                        throw new PropertyVetoException(msg, evt);
-                    }
+                    IntegerVetoable.validate(evt, MIN_VALUE);
+                    break;
                 }
 
                 case HEIGHT: {
-                    Integer newPosition = (Integer) evt.getNewValue();
-
-                    if (newPosition == null) {
-                        String msg = "Height should not be null.";
-                        throw new PropertyVetoException(msg, evt);
-                    }
-
-                    int position = newPosition;
-
-                    if (position < MIN_VALUE) {
-                        String msg = "Height should be > " + MIN_VALUE + ".";
-                        throw new PropertyVetoException(msg, evt);
-                    }
+                    IntegerVetoable.validate(evt, MIN_VALUE);
+                    break;
                 }
             }
         }

@@ -1,10 +1,7 @@
 package bean;
 
-import impl.DescriptorHelpers.EventHelper;
-import impl.DescriptorHelpers.MethodHelper;
-import impl.DescriptorHelpers.PropertyHelper;
-import impl.ImageEvent;
-import interfaces.ImageListener;
+import impl.descriptorhelpers.MethodHelper;
+import impl.descriptorhelpers.PropertyHelper;
 
 import java.beans.EventSetDescriptor;
 import java.beans.MethodDescriptor;
