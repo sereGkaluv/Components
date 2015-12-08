@@ -1,5 +1,5 @@
 Manifest-Version: 1.0
 
-Name: bean.Dilate.class
+Name: components.bean.Dilate.class
 Java-Bean: True
 

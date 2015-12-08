@@ -1,4 +1,4 @@
-import bean.ImageSaverBeanInfo;
+import components.bean.ImageSaverBeanInfo;
 
 import java.beans.EventSetDescriptor;
 import java.beans.MethodDescriptor;

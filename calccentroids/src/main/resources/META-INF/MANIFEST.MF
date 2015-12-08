@@ -1,5 +1,5 @@
 Manifest-Version: 1.0
 
-Name: bean.CalcCentroids.class
+Name: components.bean.CalcCentroids.class
 Java-Bean: True
 

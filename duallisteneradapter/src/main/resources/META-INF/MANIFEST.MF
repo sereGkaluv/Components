@@ -1,0 +1,5 @@
+Manifest-Version: 1.0
+
+Name: components.bean.DualListenerAdapter.class
+Java-Bean: True
+
